@@ -1,2 +1,2 @@
 # Cpu-Scheduler
-Cpu schedular process Simulator
+Intelligent Cpu schedular process Simulator
