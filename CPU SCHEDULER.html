@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CPU Scheduling Simulator</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dark">
+  <div class="container">
+    <header>
+      <h1>CPU Scheduling Simulator</h1>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark/light mode">
+        <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
+    </header>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-algorithm="fcfs">First Come First Serve</button>
+      <button class="tab-btn" data-algorithm="sjf">Shortest Job First</button>
+      <button class="tab-btn" data-algorithm="priority">Priority</button>
+      <button class="tab-btn" data-algorithm="rr">Round Robin</button>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h2>Process Input</h2>
+        <p>Enter the details for each process</p>
+      </div>
+      <div class="card-content">
+        <div class="table-container">
+          <table id="process-table">
+            <thead>
+              <tr>
+                <th>Process</th>
+                <th>Arrival Time</th>
+                <th>Burst Time</th>
+                <th id="priority-header" class="hidden">Priority</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="process-tbody">
+            </tbody>
+          </table>
+        </div>
+
+        <div class="controls">
+          <button id="add-process" class="btn btn-outline">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add Process
+          </button>
+
+          <div id="time-quantum-container" class="time-quantum hidden">
+            <label for="time-quantum">Time Quantum:</label>
+            <input type="number" id="time-quantum" min="1" value="2" class="input-small">
+          </div>
+
+          <button id="run-simulation" class="btn btn-primary">Run Simulation</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="simulation-results" class="hidden">
+      <div class="card">
+        <div class="card-header">
+          <h2>Gantt Chart</h2>
+          <div class="visualization-controls">
+            <button id="reset-viz" class="btn btn-icon" title="Reset">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                <path d="M3 2v6h6"></path>
+                <path d="M3 13a9 9 0 1 0 3-7.7L3 8"></path>
+              </svg>
+            </button>
+            <button id="step-viz" class="btn btn-icon" title="Step">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                <polygon points="5 4 15 12 5 20 5 4"></polygon>
+                <line x1="19" y1="5" x2="19" y2="19"></line>
+              </svg>
+            </button>
+            <button id="play-viz" class="btn btn-icon" title="Play/Pause">
+              <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+              <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon hidden">
+                <rect x="6" y="4" width="4" height="16"></rect>
+                <rect x="14" y="4" width="4" height="16"></rect>
+              </svg>
+            </button>
+            <div class="speed-control">
+              <label for="speed-slider">Speed:</label>
+              <input type="range" id="speed-slider" min="1" max="10" value="5" class="slider">
+            </div>
+          </div>
+        </div>
+        <div class="card-content">
+          <div id="gantt-chart" class="gantt-chart">
+          </div>
+          <div id="gantt-legend" class="gantt-legend">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>Calculation Results</h2>
+        </div>
+        <div class="card-content">
+          <div class="table-container">
+            <table id="results-table">
+              <thead>
+                <tr>
+                  <th>Process</th>
+                  <th>Arrival Time</th>
+                  <th>Burst Time</th>
+                  <th>Completion Time</th>
+                  <th>Turnaround Time</th>
+                  <th>Waiting Time</th>
+                </tr>
+              </thead>
+              <tbody id="results-tbody">
+              </tbody>
+            </table>
+          </div>
+
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <h3>Average Waiting Time</h3>
+              <p id="avg-waiting-time" class="metric-value">0.00</p>
+            </div>
+            <div class="metric-card">
+              <h3>Average Turnaround Time</h3>
+              <p id="avg-turnaround-time" class="metric-value">0.00</p>
+            </div>
+            <div class="metric-card">
+              <h3>CPU Utilization</h3>
+              <p id="cpu-utilization" class="metric-value">0.00%</p>
+            </div>
+          </div>
+
+          <div class="explanation-card">
+            <h3>Calculation Explanation</h3>
+            <div class="explanation-content">
+              <p><strong>Waiting Time (WT)</strong> = Turnaround Time - Burst Time</p>
+              <p><strong>Turnaround Time (TAT)</strong> = Completion Time - Arrival Time</p>
+              <p><strong>CPU Utilization</strong> = (Total Burst Time / Completion Time of Last Process) × 100%</p>
+              <p><strong>Average Waiting Time</strong> = Sum of all Waiting Times / Number of Processes</p>
+              <p><strong>Average Turnaround Time</strong> = Sum of all Turnaround Times / Number of Processes</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
