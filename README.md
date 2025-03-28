@@ -29,6 +29,11 @@ The simulator is built using standard web technologies:
 - HTML5 for structure
 - CSS3 for responsive styling
 - Vanilla JavaScript for algorithm implementation and visualization
+
+##File Structure
+![Screenshot (51)](https://github.com/user-attachments/assets/f3db1788-8671-4707-be5e-6e1f74e6348d)
+
+  
 ## Usage Guide
 1. Add processes with their parameters (name, arrival time, burst time, priority)
 2. Select a scheduling algorithm
