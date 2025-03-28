@@ -162,4 +162,4 @@ Add support for preemptive algorithms like Preemptive Priority and Shortest Rema
 
 Enable process data export and import.
 
-Improve UI responsiveness for smaller devices.
+Improve UI responsiveness for smaller devices
