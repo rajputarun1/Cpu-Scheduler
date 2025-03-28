@@ -1,165 +1,55 @@
-Intelligent CPU Scheduling Simulator
-
-Overview
-
-The Intelligent CPU Scheduling Simulator is a dynamic and interactive web application designed to demonstrate various CPU scheduling algorithms. It visualizes the scheduling process, calculates important metrics, and provides a Gantt chart for better understanding.
-
-Features
-
-Supported Scheduling Algorithms:
-
-First Come First Serve (FCFS)
-
-Shortest Job First (SJF)
-
-Priority Scheduling
-
-Round Robin (with configurable time quantum)
-
-Dynamic Process Management:
-
-Add, update, and delete processes dynamically.
-
-Priority-based input visibility toggling.
-
-Visualization:
-
-Gantt chart to display process execution order.
-
-Legend for color-coded process mapping.
-
-Metrics:
-
-Average Waiting Time
-
-Average Turnaround Time
-
-CPU Utilization
-
-Responsive and Interactive UI:
-
-Editable process inputs.
-
-Animations for process execution.
-
-Technologies Used
-
-Frontend: HTML, CSS, JavaScript
-
-Styling Framework: Custom CSS with flexbox and grid-based layout.
-
-File Structure
-
-project-directory/
-├── index.html       # Main HTML file for the simulator
-├── styles.css       # CSS file for styling the simulator
-├── script.js        # JavaScript file containing the logic
-└── README.md        # Documentation for the project
-
-How to Use
-
-Open index.html in any modern web browser.
-
-Add processes by entering the following details:
-
-Process Name
-
-Arrival Time
-
-Burst Time
-
-Priority (only for Priority Scheduling)
-
-Choose a scheduling algorithm from the dropdown.
-
-For Round Robin, enter the desired time quantum.
-
-Click on "Simulate" to visualize the process execution.
-
-View results in the "Results" section and observe the Gantt chart.
-
-Code Breakdown
-
-HTML
-
-Defines the structure of the simulator, including:
-
-Input forms for adding processes.
-
-Dropdown for algorithm selection.
-
-Sections for displaying results, metrics, and Gantt chart.
-
-CSS
-
-Custom styling to ensure:
-
-Responsive layout.
-
-Distinct visual elements such as buttons, tables, and charts.
-
-Color coding for processes.
-
-JavaScript
-
-Handles:
-
-Process management (add, update, delete).
-
-Implementation of CPU scheduling algorithms.
-
-Rendering of tables, results, and Gantt chart.
-
-Dynamic animations and interactivity.
-
-Scheduling Algorithms
-
-First Come First Serve (FCFS)
-
-Processes are scheduled in the order of their arrival times. Metrics like waiting time and turnaround time are calculated based on execution order.
-
-Shortest Job First (SJF)
-
-Processes are scheduled based on their burst time. Shorter jobs are prioritized, leading to potential improvement in average waiting time.
-
-Priority Scheduling
-
-Processes are scheduled based on their priority. Lower numerical values indicate higher priority.
-
-Round Robin
-
-Processes are scheduled in a cyclic manner, with each process receiving a time slice (quantum). This ensures fairness and avoids starvation.
-
-Metrics Explained
-
-Average Waiting Time: The average time a process waits in the ready queue.
-
-Average Turnaround Time: The average time taken from process arrival to its completion.
-
-CPU Utilization: Percentage of time the CPU is actively executing processes.
-
-Gantt Chart
-
-The Gantt chart visually represents process execution over time. Each bar corresponds to a process, with width proportional to its execution time.
-
-Example Usage
-
-Add three processes:
-
-Process A: Arrival Time = 0, Burst Time = 5
-
-Process B: Arrival Time = 2, Burst Time = 3
-
-Process C: Arrival Time = 4, Burst Time = 1
-
-Choose FCFS as the scheduling algorithm.
-
-Click "Simulate" to see the results and Gantt chart.
-
-Future Enhancements
-
-Add support for preemptive algorithms like Preemptive Priority and Shortest Remaining Time First (SRTF).
-
-Enable process data export and import.
-
-Improve UI responsiveness for smaller devices
+# CPU Scheduling Simulator
+A comprehensive web-based tool for visualizing and analyzing CPU scheduling algorithms in operating systems.
+
+## Overview
+The CPU Scheduling Simulator provides an interactive platform to demonstrate how different scheduling algorithms allocate processor time to processes. It offers real-time visualization through Gantt charts and calculates key performance metrics to facilitate algorithm comparison.
+
+## Key Features
+### Scheduling Algorithms
+- First Come First Serve (FCFS) : Simple queue-based scheduling based on arrival order
+- Shortest Job First (SJF) : Minimizes waiting time by prioritizing shorter processes
+- Priority Scheduling : Executes processes based on assigned priority values
+- Round Robin : Ensures fairness using time slices with configurable quantum
+### Interactive Process Management
+- Dynamic process creation and modification
+- Contextual input fields that adapt to the selected algorithm
+- Drag-and-drop process reordering
+### Visual Analysis Tools
+- Color-coded Gantt chart visualization
+- Process execution timeline
+- Automatic metrics calculation
+### Performance Metrics
+- Average Waiting Time
+- Average Turnaround Time
+- CPU Utilization Rate
+- Throughput
+## Implementation
+The simulator is built using standard web technologies:
+
+- HTML5 for structure
+- CSS3 for responsive styling
+- Vanilla JavaScript for algorithm implementation and visualization
+## Usage Guide
+1. Add processes with their parameters (name, arrival time, burst time, priority)
+2. Select a scheduling algorithm
+3. Configure algorithm-specific settings (e.g., time quantum for Round Robin)
+4. Run the simulation to view the Gantt chart and performance metrics
+5. Compare results across different algorithms
+## Example Scenario
+For a workload with three processes:
+
+- Process A: Arrival at 0ms, Burst time of 5ms
+- Process B: Arrival at 2ms, Burst time of 3ms
+- Process C: Arrival at 4ms, Burst time of 1ms
+The FCFS algorithm produces:
+
+- Execution order: A → B → C
+- Average Waiting Time: 2.67ms
+- Average Turnaround Time: 6ms
+## Future Development
+- Implementation of preemptive scheduling variants
+- Multi-level queue scheduling
+- Process priority aging mechanisms
+- Simulation speed controls
+- Data export capabilities
+This simulator serves as both an educational tool for understanding operating system concepts and a practical utility for analyzing scheduling algorithm performance under various workloads.
