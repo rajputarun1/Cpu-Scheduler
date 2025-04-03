@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPU Scheduling Simulator</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="./styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1><i class="fas fa-tasks"></i> CPU Scheduling Simulator</h1>
+
+        <div class="input-section">
+            <h3><i class="fas fa-keyboard"></i> Enter Processes</h3>
+            <div id="processInputs">
+                <!-- Initial process row -->
+                <div class="process-row">
+                    <div class="process-input-wrapper">
+                        <label for="pid1" class="process-label">PID:</label>
+                        <input type="number" class="process-input" id="pid1" placeholder="PID" value="1" readonly>
+                    </div>
+
+                    <div class="process-input-wrapper">
+                        <label for="arrival1" class="process-label">Arrival:</label>
+                        <input type="number" class="process-input" id="arrival1" placeholder="Arrival" value="0">
+                    </div>
+
+                    <div class="process-input-wrapper">
+                        <label for="burst1" class="process-label">Burst:</label>
+                        <input type="number" class="process-input" id="burst1" placeholder="Burst" value="5">
+                    </div>
+
+                    <div class="process-input-wrapper">
+                        <label for="priority1" class="process-label">Priority:</label>
+                        <input type="number" class="process-input" id="priority1" placeholder="Priority" value="0">
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="addProcessRow()"><i class="fas fa-plus"></i> Add Process</button>
+            <button class="btn btn-danger" onclick="removeProcessRow()"><i class="fas fa-minus"></i> Remove Process</button>
+        </div>
+
+        <div id="roundRobinSettings" class="input-section" style="display:none;">
+            <h3><i class="fas fa-cog"></i> Round Robin Settings</h3>
+            <label for="timeQuantum">Time Quantum:</label>
+            <input type="number" id="timeQuantum" value="2">
+        </div>
+
+        <div class="algorithms">
+            <button class="btn btn-info algorithm-btn" onclick="runFCFS()"><i class="fas fa-play"></i> FCFS</button>
+            <button class="btn btn-info algorithm-btn" onclick="runSJF()"><i class="fas fa-play"></i> SJF</button>
+            <button class="btn btn-info algorithm-btn" onclick="runPriority()"><i class="fas fa-play"></i> Priority</button>
+            <button class="btn btn-info algorithm-btn" onclick="showRoundRobinSettings(); runRoundRobin()"><i
+                    class="fas fa-play"></i> Round Robin</button>
+            <button class="btn btn-secondary" onclick="resetSimulation()"><i class="fas fa-undo"></i> Reset</button>
+        </div>
+
+        <div class="performance-metrics">
+            <h3><i class="fas fa-info-circle"></i> Process Information</h3>
+            <table class="table table-bordered" id="metricsTable">
+                <thead>
+                    <tr>
+                        <th>Process</th>
+                        <th>Burst Time</th>
+                        <th>Priority</th>
+                        <th>Arrival Time</th>
+                        <th>Waiting Time</th>
+                        <th>Turnaround Time</th>
+                        <th>Completion Time</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Results here -->
+                </tbody>
+            </table>
+            <div id="averageMetrics">
+                <h4><i class="fas fa-chart-bar"></i> Average Metrics</h4>
+                <p><strong>Average Waiting Time:</strong> <span id="avgWaitingTime">0</span></p>
+                <p><strong>Average Turnaround Time:</strong> <span id="avgTurnaroundTime">0</span></p>
+                <p><strong>Average Completion Time:</strong> <span id="avgCompletionTime">0</span></p>
+            </div>
+        </div>
+
+        <div class="graph-container">
+            <h3><i class="fas fa-chart-line"></i> Gantt Chart</h3>
+            <canvas id="ganttChart" class="gantt-chart-canvas"></canvas>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 CPU Scheduling Simulator</p>
+        <p>&copy; 12302766_Arun</p>
+        <p>&copy; 12306746_Pawan</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./algorithms.js"></script>
+    <script src="./scripts.js"></script>
+</body>
+
+</html>
