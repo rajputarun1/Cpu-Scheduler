@@ -112,7 +112,6 @@ function calculateAverages() {
     const avgWaitingTime = totalWaitingTime / processes.length || 0;
     const avgTurnaroundTime = totalTurnaroundTime / processes.length || 0;
     const avgCompletionTime = totalCompletionTime / processes.length || 0;
-
     document.getElementById('avgWaitingTime').textContent = avgWaitingTime.toFixed(2);
     document.getElementById('avgTurnaroundTime').textContent = avgTurnaroundTime.toFixed(2);
     document.getElementById('avgCompletionTime').textContent = avgCompletionTime.toFixed(2);
@@ -182,21 +181,31 @@ function drawGanttChart() {
     const padding = chartWidth * 0.05; // 5% padding on each side
     const availableWidth = chartWidth - 2 * padding;
 
+    // Collect unique start times for the scale
+    let startTimes = [...new Set(timeline.map(event => event.start))].sort((a, b) => a - b);
+
+     // Add end time of the last process
+    if (timeline.length > 0) {
+        const lastEvent = timeline[timeline.length - 1];
+        if (!startTimes.includes(lastEvent.end)) {
+            startTimes.push(lastEvent.end);
+            startTimes.sort((a, b) => a - b);
+        }
+    }
+
     // Draw the timeline scale
     ctx.fillStyle = 'black';
     ctx.font = '12px Arial';
     ctx.textAlign = 'center';
 
-    const scaleInterval = totalTime / 4; // Divide the timeline into 5 parts
-    for (let i = 0; i <= 4; i++) {
-        const time = minTime + i * scaleInterval;
-        const x = padding + (i * availableWidth) / 4; // Apply padding to the x coordinate
-        ctx.fillText(time.toFixed(0), x, startY - 20); // Position the scale labels above the chart
-    }
+    startTimes.forEach(time => {
+        const x = padding + (time - minTime) / totalTime * availableWidth;
+        ctx.fillText(time.toFixed(0), x, startY - 20);
+    });
 
     timeline.forEach((event, index) => {
-        const blockWidth = (event.end - event.start) / totalTime * availableWidth; // Use availableWidth instead of chartWidth
-        const startX = padding + (event.start - minTime) / totalTime * availableWidth; // Apply padding to the x coordinate
+        const blockWidth = (event.end - event.start) / totalTime * availableWidth;
+        const startX = padding + (event.start - minTime) / totalTime * availableWidth;
         const colorIndex = index % colors.length;
 
         ctx.fillStyle = colors[colorIndex];
@@ -206,7 +215,6 @@ function drawGanttChart() {
         ctx.font = '14px Arial';
         ctx.textAlign = 'center';
 
-        // Check if the block is wide enough to display the process ID
         if (blockWidth > 20) {
             ctx.fillText(
                 `P${event.process}`,
@@ -216,3 +224,200 @@ function drawGanttChart() {
         }
     });
 }
+
+function executeFCFS() {
+    parseProcesses();
+    timeline = [];
+    let currentTime = 0;
+
+    processes.sort((a, b) => a.arrival - b.arrival);
+
+    processes.forEach(process => {
+        if (currentTime < process.arrival) {
+            currentTime = process.arrival;
+        }
+
+        process.start = currentTime;
+        process.completion = currentTime + process.burst;
+        process.end = process.completion;
+        process.turnaround = process.completion - process.arrival;
+        process.waiting = process.start - process.arrival;
+
+        timeline.push({
+            process: process.pid,
+            start: process.start,
+            end: process.end
+        });
+
+        currentTime = process.completion;
+    });
+
+    updateTable();
+    calculateAverages();
+    drawGanttChart();
+}
+
+function executeSJF() {
+    parseProcesses();
+    timeline = [];
+    let currentTime = 0;
+    let completed = 0;
+    const n = processes.length;
+    let remainingProcesses = [...processes];
+
+    while (completed < n) {
+        let shortest = null;
+        let shortestIndex = -1;
+
+        for (let i = 0; i < remainingProcesses.length; i++) {
+            if (remainingProcesses[i].arrival <= currentTime) {
+                if (shortest === null || remainingProcesses[i].burst < shortest.burst) {
+                    shortest = remainingProcesses[i];
+                    shortestIndex = i;
+                }
+            }
+        }
+
+        if (shortest === null) {
+            currentTime++;
+            continue;
+        }
+
+        shortest.start = currentTime;
+        shortest.completion = currentTime + shortest.burst;
+        shortest.end = shortest.completion;
+        shortest.turnaround = shortest.completion - shortest.arrival;
+        shortest.waiting = shortest.start - shortest.arrival;
+
+        timeline.push({
+            process: shortest.pid,
+            start: shortest.start,
+            end: shortest.end
+        });
+
+        currentTime = shortest.completion;
+        completed++;
+        remainingProcesses.splice(shortestIndex, 1);
+    }
+
+    updateTable();
+    calculateAverages();
+    drawGanttChart();
+}
+
+function executePriority() {
+    parseProcesses();
+    timeline = [];
+    let currentTime = 0;
+    let completed = 0;
+    const n = processes.length;
+    let remainingProcesses = [...processes];
+
+    while (completed < n) {
+        let highestPriority = null;
+        let highestPriorityIndex = -1;
+
+        for (let i = 0; i < remainingProcesses.length; i++) {
+            if (remainingProcesses[i].arrival <= currentTime) {
+                if (highestPriority === null || remainingProcesses[i].priority < highestPriority.priority) {
+                    highestPriority = remainingProcesses[i];
+                    highestPriorityIndex = i;
+                }
+            }
+        }
+
+        if (highestPriority === null) {
+            currentTime++;
+            continue;
+        }
+
+        highestPriority.start = currentTime;
+        highestPriority.completion = currentTime + highestPriority.burst;
+        highestPriority.end = highestPriority.completion;
+        highestPriority.turnaround = highestPriority.completion - highestPriority.arrival;
+        highestPriority.waiting = highestPriority.start - highestPriority.arrival;
+
+        timeline.push({
+            process: highestPriority.pid,
+            start: highestPriority.start,
+            end: highestPriority.end
+        });
+
+        currentTime = highestPriority.completion;
+        completed++;
+        remainingProcesses.splice(highestPriorityIndex, 1);
+    }
+
+    updateTable();
+    calculateAverages();
+    drawGanttChart();
+}
+
+function executeRoundRobin() {
+    parseProcesses();
+    timeline = [];
+    let currentTime = 0;
+    let completed = 0;
+    const n = processes.length;
+    let remainingProcesses = processes.map(p => ({ ...p }));
+    let queue = [];
+    const quantum = parseInt(document.getElementById('quantum').value);
+
+    // Initialize queue with processes that have arrived
+    remainingProcesses.forEach(process => {
+        if (process.arrival <= 0) {
+            queue.push(process);
+        }
+    });
+    remainingProcesses = remainingProcesses.filter(process => process.arrival > 0);
+
+    while (completed < n) {
+        if (queue.length === 0) {
+            if (remainingProcesses.length > 0 && remainingProcesses[0].arrival > currentTime) {
+                currentTime = remainingProcesses[0].arrival; // Advance time to the next arrival
+            } else {
+                break;  // No more processes to run
+            }
+        }
+
+        let process = queue.shift();
+        let executionTime = Math.min(quantum, process.remaining);
+        let startTime = currentTime;
+
+        process.start = (process.start === 0 || process.start > currentTime) ? currentTime : process.start;
+        currentTime += executionTime;
+        process.remaining -= executionTime;
+
+        timeline.push({
+            process: process.pid,
+            start: startTime,
+            end: currentTime
+        });
+
+        if (process.remaining === 0) {
+            completed++;
+            process.completion = currentTime;
+            process.end = currentTime;
+            process.turnaround = process.completion - process.arrival;
+            process.waiting = process.turnaround - process.burst;
+        } else {
+            // Add back to the queue if not completed
+            queue.push(process);
+        }
+
+        // Add newly arrived processes to the queue
+        for (let i = 0; i < remainingProcesses.length; i++) {
+            if (remainingProcesses[i].arrival <= currentTime) {
+                queue.push(remainingProcesses[i]);
+                remainingProcesses.splice(i, 1);
+                i--; // Adjust index after removing element
+            }
+        }
+    }
+
+    updateTable();
+    calculateAverages();
+    drawGanttChart();
+}
+
+
