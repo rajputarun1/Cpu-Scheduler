@@ -11,7 +11,7 @@ The CPU Scheduling Simulator provides an interactive platform to demonstrate how
 - Priority Scheduling : Executes processes based on assigned priority values
 - Round Robin : Ensures fairness using time slices with configurable quantum
 ### Interactive Process Management
-- Dynamic process creation and modification
+
 - Contextual input fields that adapt to the selected algorithm
 - Drag-and-drop process reordering
 ### Visual Analysis Tools
@@ -21,8 +21,6 @@ The CPU Scheduling Simulator provides an interactive platform to demonstrate how
 ### Performance Metrics
 - Average Waiting Time
 - Average Turnaround Time
-- CPU Utilization Rate
-- Throughput
 ## Implementation
 The simulator is built using standard web technologies:
 
